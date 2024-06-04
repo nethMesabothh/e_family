@@ -2,8 +2,9 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { userCreate } from "@/actions/user-create";
+import { createUser, deleteUser, updateUser } from "@/actions/user-logic";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
       updateAt: new Date(),
     };
 
-    const newUser = await userCreate(user);
+    const newUser = await createUser(user);
 
     if (newUser) {
       await clerkClient.users.updateUserMetadata(id, {
@@ -79,6 +80,45 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ message: "new users created", user: newUser });
+  }
+
+  if (eventType === "user.updated") {
+    const { username, id, image_url, first_name, last_name } = evt.data;
+
+    const exitsUser = {
+      id,
+      username,
+      avatar: image_url,
+      firstName: first_name,
+      lastName: last_name,
+      createAt: new Date(),
+      updateAt: new Date(),
+    };
+
+    const update_user = await updateUser(exitsUser);
+
+    if (update_user) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: exitsUser.id,
+        },
+      });
+    }
+
+    return NextResponse.json({ message: "new users created", user: exitsUser });
+  }
+
+  if (eventType === "user.deleted") {
+    const { id } = evt.data;
+
+    if (!id) {
+      throw new Error("no fucking user");
+    }
+    await deleteUser(id);
+
+    await clerkClient.users.deleteUser(id);
+
+    redirect("/");
   }
   //   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   //   console.log("Webhook body:", body);
