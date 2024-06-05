@@ -18,6 +18,8 @@ import FileUploader from "@/components/main/file-uploader/file-uploader";
 import { useUploadThing } from "@/lib/uploadthing";
 import { Textarea } from "@/components/ui/textarea";
 import { DropDownCategory } from "@/components/main/category/drop-down-category";
+import { DatePicker } from "@/components/main/date-picker/date-picker";
+import { LoaderCircle } from "lucide-react";
 
 const productSchema = z.object({
   productName: z.string().min(3, {
@@ -28,6 +30,8 @@ const productSchema = z.object({
   description: z.string().min(5, {
     message: "Description must be at least 5 characters.",
   }),
+  price: z.string(),
+  dayInStock: z.date(),
 });
 
 export const ProductForm = () => {
@@ -40,6 +44,8 @@ export const ProductForm = () => {
       imageUrl: "",
       description: "",
       categoryId: "",
+      price: "",
+      dayInStock: new Date(),
     },
   });
 
@@ -133,8 +139,54 @@ export const ProductForm = () => {
               </FormItem>
             )}
           />
+          {/* Product price should have khmer riel and dollar*/}
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product Price</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="price" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <Button type="submit">Submit</Button>
+          {/* Date pick product in stock*/}
+          <FormField
+            control={form.control}
+            name="dayInStock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>DayInStock</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    value={field.value}
+                    onFieldChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            size="lg"
+            disabled={form.formState.isSubmitting}
+            className="button col-span-2 w-full"
+          >
+            {form.formState.isSubmitting ? (
+              <div className="flex items-center gap-3">
+                <h1>Submitting...</h1>
+                <LoaderCircle className="ml-2 h-3 w-3 animate-spin transition-all" />
+              </div>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </form>
       </Form>
     </div>
