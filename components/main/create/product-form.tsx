@@ -17,11 +17,13 @@ import { useState } from "react";
 import FileUploader from "@/components/main/file-uploader/file-uploader";
 import { useUploadThing } from "@/lib/uploadthing";
 import { Textarea } from "@/components/ui/textarea";
+import { DropDownCategory } from "@/components/main/category/drop-down-category";
 
 const productSchema = z.object({
   productName: z.string().min(3, {
     message: "ProductName must be at least 3 characters.",
   }),
+  categoryId: z.string(),
   imageUrl: z.string(),
   description: z.string().min(5, {
     message: "Description must be at least 5 characters.",
@@ -37,6 +39,7 @@ export const ProductForm = () => {
       productName: "",
       imageUrl: "",
       description: "",
+      categoryId: "",
     },
   });
 
@@ -72,6 +75,23 @@ export const ProductForm = () => {
                 <FormLabel>Product Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Product Name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Category */}
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <DropDownCategory
+                    onChangeHandler={field.onChange}
+                    value={field.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
