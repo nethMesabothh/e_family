@@ -3,7 +3,6 @@
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { IUser } from "@/types";
-import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 

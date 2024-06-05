@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { createUser, deleteUser, updateUser } from "@/actions/user-logic";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
+import { userRoleEnum } from "@/db/schema";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -59,6 +60,8 @@ export async function POST(req: Request) {
   if (eventType === "user.created") {
     const { username, id, image_url, first_name, last_name } = evt.data;
 
+    const role: "USER" | "ADMIN" = "USER"; // or "ADMIN" depending on the user role
+
     const user = {
       id,
       username,
@@ -67,6 +70,7 @@ export async function POST(req: Request) {
       lastName: last_name,
       createAt: new Date(),
       updateAt: new Date(),
+      role,
     };
 
     const newUser = await createUser(user);
@@ -85,6 +89,8 @@ export async function POST(req: Request) {
   if (eventType === "user.updated") {
     const { username, id, image_url, first_name, last_name } = evt.data;
 
+    const role: "USER" | "ADMIN" = "USER"; // or "ADMIN" depending on the user role
+
     const exitsUser = {
       id,
       username,
@@ -93,6 +99,7 @@ export async function POST(req: Request) {
       lastName: last_name,
       createAt: new Date(),
       updateAt: new Date(),
+      role,
     };
 
     const update_user = await updateUser(exitsUser);
