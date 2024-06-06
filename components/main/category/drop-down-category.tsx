@@ -59,7 +59,7 @@ export const DropDownCategory = ({ value, onChangeHandler }: CategoryProps) => {
       <SelectContent>
         {categories.map((category) => {
           return (
-            <SelectItem value={category.categoryName!} key={category.id}>
+            <SelectItem value={category.id!} key={category.id}>
               {category.categoryName &&
                 category.categoryName?.charAt(0).toUpperCase() +
                   category.categoryName?.slice(1)}
