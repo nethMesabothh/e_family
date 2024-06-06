@@ -4,6 +4,7 @@ import {
   timestamp,
   pgEnum,
   uniqueIndex,
+  index,
 } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
@@ -11,18 +12,26 @@ import { relations } from "drizzle-orm";
 // Define an enum for the roles
 export const userRoleEnum = pgEnum("USER_ROLE", ["ADMIN", "USER"]);
 
-export const UserTable = pgTable("ef_users", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId()),
-  username: text("username"),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  avatar: text("avatar"),
-  role: userRoleEnum("role").notNull().default("USER"),
-  createAt: timestamp("create_at").defaultNow(),
-  updateAt: timestamp("update_at").$onUpdateFn(() => new Date(Date.now())),
-});
+export const UserTable = pgTable(
+  "ef_users",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    username: text("username"),
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+    avatar: text("avatar"),
+    role: userRoleEnum("role").notNull().default("USER"),
+    createAt: timestamp("create_at").defaultNow(),
+    updateAt: timestamp("update_at").$onUpdateFn(() => new Date(Date.now())),
+  },
+  (table) => {
+    return {
+      roleIndex: index("role_index").on(table.role),
+    };
+  }
+);
 
 export const UserRelation = relations(UserTable, ({ many }) => ({
   product: many(ProductTable),

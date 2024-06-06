@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "role_index" ON "ef_users" USING btree (role);

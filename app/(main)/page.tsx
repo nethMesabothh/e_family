@@ -1,4 +1,4 @@
-import Product from "@/components/main/create/product";
+import Product from "@/components/main/product/product";
 
 const Home = () => {
   return (

@@ -41,6 +41,20 @@ export const ProductForm = () => {
   const [files, setFiles] = useState<File[]>([]);
   const { userId } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await fetchCurrentUser(userId ? userId : "");
+
+      if (data?.role === "ADMIN") {
+        setIsAdmin(true);
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, [userId]);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -79,19 +93,9 @@ export const ProductForm = () => {
     }
   }
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const data = await fetchCurrentUser(userId ? userId : "");
-
-      if (data?.role === "ADMIN") {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
-    };
-
-    fetchUser();
-  }, [userId]);
+  if (loading) {
+    return <div>Loading...</div>; // Display a loading message while fetching user data
+  }
 
   return (
     <div>
