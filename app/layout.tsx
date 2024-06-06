@@ -2,6 +2,7 @@ import "./globals.css";
 import "@uploadthing/react/styles.css";
 import type { Metadata } from "next";
 import { Karla as FontSans } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
@@ -31,6 +32,7 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
+          <NextTopLoader />
           {children}
         </body>
       </html>
