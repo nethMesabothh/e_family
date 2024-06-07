@@ -139,7 +139,7 @@ export const ProductForm = () => {
               name="imageUrl"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>File Upload</FormLabel>
+                  <FormLabel>File Upload Should be 500px x 500px</FormLabel>
                   <FormControl className="h-72">
                     <FileUploader
                       onFieldChange={field.onChange}

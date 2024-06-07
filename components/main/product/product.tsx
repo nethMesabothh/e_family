@@ -2,8 +2,12 @@ import React from "react";
 import { ProductLists } from "./product-list";
 import { fetchAllProduct } from "@/queries/products";
 
-const Product = async () => {
-  const products = await fetchAllProduct();
+type ProductProps = {
+  categoryId: string | undefined;
+};
+
+const Product = async ({ categoryId }: ProductProps) => {
+  const products = await fetchAllProduct({ categoryIdQuery: categoryId });
 
   return (
     <div className="my-10">

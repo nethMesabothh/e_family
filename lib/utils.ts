@@ -1,5 +1,7 @@
+import { RemoveUrlQueryProps, urlQueryProps } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import qs from "query-string";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -74,3 +76,38 @@ export const formatPriceKH = (price: string) => {
 
   return formattedPrice;
 };
+
+export const urlQuery = ({ params, key, value }: urlQueryProps) => {
+  let currentUrl = qs.parse(params);
+
+  currentUrl[key] = value;
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    {
+      skipNull: true,
+    }
+  );
+};
+
+export function removeKeysFromQuery({
+  params,
+  keysToRemove,
+}: RemoveUrlQueryProps) {
+  let currentUrl = qs.parse(params);
+
+  keysToRemove.forEach((key) => {
+    delete currentUrl[key];
+  });
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+}
