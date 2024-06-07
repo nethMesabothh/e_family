@@ -45,7 +45,7 @@ export const FilterProduct = () => {
   };
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 flex justify-center">
       <Select
         onValueChange={(categoryId: string) => handleSelectCategory(categoryId)}
       >

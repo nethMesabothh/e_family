@@ -19,7 +19,7 @@ export const Header = () => {
     <nav className="py-4 border-b-2">
       <div className="container flex justify-between items-center">
         {/* Logo */}
-        <div>E-family</div>
+        <Link href="/">E-family</Link>
         {/* Navigate */}
         <div className="flex gap-6 items-center">{renderedLinks}</div>
         {/*Clerk User Button */}

@@ -5,15 +5,22 @@ import { db } from "@/db";
 import { cache } from "react";
 
 type fetchAllProductProps = {
-  // searchQuery?: string;
+  searchQuery?: string;
   categoryIdQuery?: string;
 };
 
 export const fetchAllProduct = cache(
-  async ({ categoryIdQuery }: fetchAllProductProps) => {
+  async ({ categoryIdQuery, searchQuery }: fetchAllProductProps) => {
     const products = await db.query.ProductTable.findMany({
       where: (product, { eq, and, ilike }) => {
         const conditions = [];
+
+        if (searchQuery) {
+          conditions.push(
+            eq(product.productName, searchQuery) &&
+              ilike(product.productName, `%${searchQuery}%`)
+          );
+        }
 
         if (categoryIdQuery) {
           conditions.push(
