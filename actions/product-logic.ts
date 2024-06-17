@@ -44,3 +44,59 @@ export const createProduct = async ({ values }: createProductProps) => {
 
   return product;
 };
+
+type updateProductProps = {
+  values: {
+    productName?: string;
+    categoryId?: string;
+    imageUrl?: string;
+    description?: string;
+    price?: string;
+    dayInStock?: Date;
+  };
+  productId: string;
+};
+
+export const updateProduct = async ({
+  values,
+  productId,
+}: updateProductProps) => {
+  console.log(values);
+  const { userId } = auth();
+
+  if (!userId) {
+    return new Error("no user!");
+  }
+
+  const product = await db
+    .update(schema.ProductTable)
+    .set({
+      productName: values.productName,
+      categoryId: values.categoryId,
+      imageUrl: values.imageUrl,
+      description: values.description,
+      price: values.price,
+      dayInStock: values.dayInStock?.toISOString(),
+    })
+    .where(eq(schema.ProductTable.id, productId))
+    .returning();
+
+  return product[0];
+};
+
+export const deleteProduct = async (productId: string) => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return;
+  }
+
+  const product = await db
+    .delete(schema.ProductTable)
+    .where(eq(schema.ProductTable.id, productId))
+    .returning();
+
+  revalidatePath("/");
+
+  return product[0];
+};

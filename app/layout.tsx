@@ -16,6 +16,9 @@ const fontSans = FontSans({
 export const metadata: Metadata = {
   title: "e_family",
   description: "Generated & Create by Both",
+  icons: {
+    icon: "",
+  },
 };
 
 export default function RootLayout({

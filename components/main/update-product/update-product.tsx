@@ -20,9 +20,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { DropDownCategory } from "@/components/main/category/drop-down-category";
 import { DatePicker } from "@/components/main/date-picker/date-picker";
 import { LoaderCircle } from "lucide-react";
-import { createProduct } from "@/actions/product-logic";
+import { createProduct, updateProduct } from "@/actions/product-logic";
 import { useAuth } from "@clerk/nextjs";
 import { fetchCurrentUser } from "@/queries/users";
+import { IProduct } from "@/types";
+
+// type updateProductProps = {
+//   product?: {
+//     productName: string;
+//     categoryId: string;
+//     imageUrl: string;
+//     description: string;
+//     price: string;
+//     dayInStock: string;
+//     userId: string;
+//     id: string;
+//   };
+// };
+type updateProductProps = {
+  product?: IProduct;
+};
 
 const productSchema = z.object({
   productName: z.string().min(3, {
@@ -37,7 +54,7 @@ const productSchema = z.object({
   dayInStock: z.date(),
 });
 
-export const ProductForm = () => {
+export const UpdateProduct = ({ product }: updateProductProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const { userId } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -59,12 +76,14 @@ export const ProductForm = () => {
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      productName: "",
-      imageUrl: "",
-      description: "",
-      categoryId: "",
-      price: "",
-      dayInStock: new Date(),
+      productName: product?.productName,
+      imageUrl: product?.imageUrl!,
+      description: product?.description!,
+      categoryId: product?.categoryId,
+      price: product?.price!,
+      dayInStock: product?.dayInStock
+        ? new Date(product.dayInStock)
+        : new Date(),
     },
   });
 
@@ -85,12 +104,22 @@ export const ProductForm = () => {
     }
 
     console.log({ ...values, imageUrl: uploadedImageUrl });
-    const product = await createProduct({
-      values: { ...values, imageUrl: uploadedImageUrl },
-    });
-    if (product.length > 0) {
-      form.reset();
-      alert("Product Created!");
+    //TODO: update the product
+    // const product = await createProduct({
+    //   values: { ...values, imageUrl: uploadedImageUrl },
+    // });
+    // if (product.length > 0) {
+    //   form.reset();
+    // }
+    if (product?.id) {
+      const updateProductClient = await updateProduct({
+        values: { ...values, imageUrl: uploadedImageUrl },
+        productId: product.id,
+      });
+
+      if (updateProductClient) {
+        alert("Updated!");
+      }
     }
   }
 
