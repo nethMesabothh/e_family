@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { deleteProduct } from "@/actions/product-logic";
+import { useAuth } from "@clerk/nextjs";
+import { fetchCurrentUser } from "@/queries/users";
 
 type DeleteProductClientProps = {
   productId: string;
@@ -30,6 +32,21 @@ export const DeleteProductClient = ({
       alert("Product deleted!");
     }
   };
+
+  const { userId } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await fetchCurrentUser(userId ? userId : "");
+
+      if (data?.role === "ADMIN") {
+        setIsAdmin(true);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -49,9 +66,13 @@ export const DeleteProductClient = ({
         </AlertDialogHeader>
         <AlertDialogFooter className="flex items-center">
           <AlertDialogCancel className="mb-2">Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleOnclickDelete()}>
-            Delete
-          </AlertDialogAction>
+          {isAdmin ? (
+            <AlertDialogAction onClick={() => handleOnclickDelete()}>
+              Delete
+            </AlertDialogAction>
+          ) : (
+            <h1 className="text-center">You`re not admin!</h1>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

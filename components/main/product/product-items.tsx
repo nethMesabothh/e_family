@@ -3,7 +3,7 @@ import { formatDateTime, formatPriceKH, formatPriceUSD } from "@/lib/utils";
 import { IProduct } from "@/types";
 import Image from "next/image";
 import React from "react";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { DeleteProductClient } from "@/components/main/delete-product/delete-product";
 
