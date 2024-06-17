@@ -29,9 +29,7 @@ export const fetchAllProduct = cache(
         if (categoryIdQuery) {
           conditions.push(
             eq(product.categoryId, categoryIdQuery) &&
-              ilike(product.categoryId, `%${categoryIdQuery}%`) &&
-              eq(product.description, categoryIdQuery) &&
-              ilike(product.description, `%${categoryIdQuery}%`)
+              ilike(product.categoryId, `%${categoryIdQuery}%`)
           );
         }
 
