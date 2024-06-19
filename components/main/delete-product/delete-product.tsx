@@ -25,6 +25,8 @@ type DeleteProductClientProps = {
 export const DeleteProductClient = ({
   productId,
 }: DeleteProductClientProps) => {
+  const { userId } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
   const handleOnclickDelete = async () => {
     const deleted = await deleteProduct(productId);
 
@@ -33,9 +35,6 @@ export const DeleteProductClient = ({
     }
   };
 
-  const { userId } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
     const fetchUser = async () => {
       const data = await fetchCurrentUser(userId ? userId : "");
@@ -43,6 +42,7 @@ export const DeleteProductClient = ({
       if (data?.role === "ADMIN") {
         setIsAdmin(true);
       }
+      console.log(data?.role === "ADMIN");
     };
 
     fetchUser();
